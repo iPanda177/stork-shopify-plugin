@@ -5,12 +5,20 @@ import {
   RequestMethod,
 } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
-import { join } from "path";
-import shopify from "./utils/shopify.js";
-import { ProductModule } from "./product/product.module.js";
+import { MongooseModule } from "@nestjs/mongoose";
 import { Request, Response, NextFunction } from "express";
+
+import { join } from "path";
 import { readFileSync } from "fs";
+
+import shopify from "./utils/shopify.js";
 import GDPRWebhookHandlers from "./utils/gdpr.js";
+
+import * as dotenv from 'dotenv';
+import { ProductsModule } from "./modules/products/products.module.js";
+import { ScheduleModule } from "@nestjs/schedule";
+import { ShopModule } from "./modules/shop/shop.module.js";
+dotenv.config();
 
 const STATIC_PATH =
   process.env.NODE_ENV === "production"
@@ -19,7 +27,10 @@ const STATIC_PATH =
 
 @Module({
   imports: [
-    ProductModule,
+    MongooseModule.forRoot(process.env.MONGO_URI_DEV!),
+    ScheduleModule.forRoot(),
+    ShopModule,
+    ProductsModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
