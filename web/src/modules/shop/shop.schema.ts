@@ -13,6 +13,9 @@ export class Shop {
 
   @Prop({ default: false })
   authorized: boolean;
+
+  @Prop({ type: Object })
+  session: object;
 }
 
 export const ShopSchema = SchemaFactory.createForClass(Shop);

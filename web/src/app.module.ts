@@ -14,10 +14,13 @@ import { readFileSync } from "fs";
 import shopify from "./utils/shopify.js";
 import GDPRWebhookHandlers from "./utils/gdpr.js";
 
-import * as dotenv from 'dotenv';
+import { getShopDataMiddleware } from "./middlewares/get-shop-data.middleware.js";
+
 import { ProductsModule } from "./modules/products/products.module.js";
 import { ScheduleModule } from "@nestjs/schedule";
 import { ShopModule } from "./modules/shop/shop.module.js";
+
+import * as dotenv from 'dotenv';
 dotenv.config();
 
 const STATIC_PATH =
@@ -44,7 +47,7 @@ export class AppModule implements NestModule {
       method: RequestMethod.GET,
     });
     consumer
-      .apply(shopify.auth.callback(), shopify.redirectToShopifyOrAppRoot())
+      .apply(shopify.auth.callback(), shopify.redirectToShopifyOrAppRoot(), getShopDataMiddleware)
       .forRoutes({
         path: shopify.config.auth.callbackPath,
         method: RequestMethod.GET,

@@ -2,7 +2,7 @@
 
 name = "stork-dev"
 client_id = "abd04261ccb373ed459a56202f644a69"
-application_url = "https://climate-nicole-victory-zone.trycloudflare.com"
+application_url = "https://assumed-ladies-operator-sounds.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://climate-nicole-victory-zone.trycloudflare.com/auth/callback",
-  "https://climate-nicole-victory-zone.trycloudflare.com/auth/shopify/callback",
-  "https://climate-nicole-victory-zone.trycloudflare.com/api/auth/callback"
+  "https://assumed-ladies-operator-sounds.trycloudflare.com/auth/callback",
+  "https://assumed-ladies-operator-sounds.trycloudflare.com/auth/shopify/callback",
+  "https://assumed-ladies-operator-sounds.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

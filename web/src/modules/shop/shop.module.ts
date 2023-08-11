@@ -8,5 +8,6 @@ import { ShopService } from "./shop.service.js";
   imports: [MongooseModule.forFeature([{ name: Shop.name, schema: ShopSchema }])],
   controllers: [ShopController],
   providers: [ShopService],
+  exports: [MongooseModule.forFeature([{ name: Shop.name, schema: ShopSchema }])]
 })
 export class ShopModule {}
