@@ -46,12 +46,14 @@ export class AppModule implements NestModule {
       path: shopify.config.auth.path,
       method: RequestMethod.GET,
     });
-    consumer
-      .apply(shopify.auth.callback(), shopify.redirectToShopifyOrAppRoot(), getShopDataMiddleware)
-      .forRoutes({
-        path: shopify.config.auth.callbackPath,
-        method: RequestMethod.GET,
-      });
+    consumer.apply(shopify.auth.callback()).forRoutes({
+      path: shopify.config.auth.callbackPath,
+      method: RequestMethod.GET,
+    });
+    consumer.apply(shopify.redirectToShopifyOrAppRoot()).forRoutes({
+      path: shopify.config.auth.callbackPath,
+      method: RequestMethod.GET,
+    })
 
     // Validate Authenticated Session Middleware for Backend Routes
     consumer
@@ -82,5 +84,9 @@ export class AppModule implements NestModule {
       )
       .exclude({ path: "/api/(.*)", method: RequestMethod.ALL })
       .forRoutes({ path: "/*", method: RequestMethod.ALL });
+
+    consumer
+      .apply(getShopDataMiddleware)
+      .forRoutes({ path: "/api/shop", method: RequestMethod.ALL });
   }
 }

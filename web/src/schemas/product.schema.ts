@@ -17,49 +17,20 @@ export class Product {
   @Prop({ required: true })
   description: string;
   
-  @Prop()
-  category: string;
-  
   @Prop({ required: true })
   quantity: number;
   
   @Prop({ required: true })
   images: string[];
   
-  @Prop()
-  brand: string;
-  
-  @Prop()
-  condition: string;
-  
-  @Prop()
-  gender: string;
-  
-  @Prop()
-  setting_type: string;
-  
-  @Prop()
-  country: string;
-  
-  @Prop()
-  bracelet_length: string;
-
-  bracelet_style: string;
-  
-  @Prop()
-  stones__1: string;
-  
-  @Prop()
-  stones__1__carat_weight: number;
-  
-  @Prop()
-  metal_type: string;
-  
   @Prop({ nullable: true })
   msrp: number;
   
   @Prop({ required: true })
   price: number;
+
+  @Prop({ type: Object })
+  properties: any;
 }
 
 export const ProductsSchema = SchemaFactory.createForClass(Product);

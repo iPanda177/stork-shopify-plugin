@@ -9,6 +9,7 @@
     "emitDecoratorMetadata": true,    
     "strictPropertyInitialization": false,  
     "strict": true,                                      
-    "skipLibCheck": true                                 
+    "skipLibCheck": true,
+    "lib": ["es6", "dom"],                              
   }
 }

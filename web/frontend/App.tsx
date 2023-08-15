@@ -7,6 +7,7 @@ import {
   QueryProvider,
   PolarisProvider,
 } from './components';
+import { AuthContextProvider } from './context/AuthContext';
 
 export default function App() {
   // Any .tsx or .jsx files in /pages will become a route
@@ -19,7 +20,9 @@ export default function App() {
         <AppBridgeProvider>
           <QueryProvider>
             <NavigationMenu navigationLinks={[]} />
-            <Routes pages={pages} />
+            <AuthContextProvider>
+              <Routes pages={pages} />
+            </AuthContextProvider>
           </QueryProvider>
         </AppBridgeProvider>
       </BrowserRouter>
