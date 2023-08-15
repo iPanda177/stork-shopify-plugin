@@ -1,41 +1,53 @@
 import { createContext, useEffect, useState } from 'react';
 import { useAuthenticatedFetch } from '../hooks';
 
-type AuthContext = {
+type AuthData = {
   shop: string;
   accessToken: string;
   authorized: boolean;
+};
+
+type AuthContextData = {
+  auth: AuthData | null;
+  updateContext: (data: AuthData) => void;
 };
 
 type Props = {
   children: JSX.Element;
 };
 
-const initialContext = null as unknown as AuthContext;
-
-const AuthContext = createContext(initialContext);
+const AuthContext = createContext<AuthContextData | null>(null);
 
 const AuthContextProvider: React.FC<Props> = ({ children }) => {
-  const [auth, setAuth] = useState(initialContext);
+  const [auth, setAuth] = useState<AuthData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const fetch = useAuthenticatedFetch();
 
+  const updateContext = (data: AuthData) => setAuth(data);
+
   useEffect(() => {
     if (isLoading) {
-      fetch('/api/shop')
-        .then(res => res.json())
-        .then(data => {
+      const getShopData = async () => {
+        const res = await fetch('/api/shop');
+
+        if (res.ok) {
+          const data = await res.json();
           setAuth(data);
           setIsLoading(false);
-        })
-        .catch((err: unknown) => {
-          console.log(err);
+        } else {
           setIsLoading(false);
-        });
+        }
+      };
+
+      getShopData();
     }
   }, [auth]);
 
-  return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ auth, updateContext }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export { AuthContext, AuthContextProvider };

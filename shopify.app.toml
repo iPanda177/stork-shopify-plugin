@@ -2,18 +2,18 @@
 
 name = "stork-dev"
 client_id = "abd04261ccb373ed459a56202f644a69"
-application_url = "https://time-scan-certainly-edmonton.trycloudflare.com"
+application_url = "https://stork-app.dev-test.pro"
 embedded = true
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "write_products"
+scopes = "read_products, write_products, read_orders, write_orders, read_all_orders"
 
 [auth]
 redirect_urls = [
-  "https://time-scan-certainly-edmonton.trycloudflare.com/auth/callback",
-  "https://time-scan-certainly-edmonton.trycloudflare.com/auth/shopify/callback",
-  "https://time-scan-certainly-edmonton.trycloudflare.com/api/auth/callback"
+  "https://stork-app.dev-test.pro/auth/callback",
+  "https://stork-app.dev-test.pro/auth/shopify/callback",
+  "https://stork-app.dev-test.pro/api/auth/callback"
 ]
 
 [webhooks]

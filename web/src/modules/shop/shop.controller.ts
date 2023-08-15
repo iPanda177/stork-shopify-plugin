@@ -5,18 +5,23 @@ import { ShopService } from "./shop.service.js";
 
 @Controller("api/shop")
 export class ShopController {
-  constructor(private ShopService: ShopService) {}
+  constructor(private shopService: ShopService) {}
 
   @Get()
   async getShop(@Res() res: Response) {
-    console.log('get request')
-    const { domain } = res.locals.shopify.session;
-    return await this.ShopService.getShop(domain);
+    const { shop } = res.locals.shopify.session;
+    const shopData = await this.shopService.getShop(shop);
+    res.send(shopData);
   }
 
   @Get("auth")
-  async authorizeShop(@Query() query: { domain: string, token: string }) {
-    const { domain, token } = query;
-    return await this.ShopService.authorizeShop(token, domain);
+  async authorizeShop(@Res() res: Response, @Query() query: { token: string }) {
+    const { token } = query;
+    const isValidToken =  await this.shopService.authorizeShop(token);
+
+    isValidToken ? res.status(200).send('Authorized') : res.status(401).send('Unauthorized');
+
+    const session = res.locals.shopify.session;
+    const syncShop = await this.shopService.syncShop(session);
   }
 }

@@ -14,5 +14,6 @@ import { ReferenceSchema } from "../../schemas/reference.schema.js";
   ])],
   controllers: [ProductsController],
   providers: [ProductsService],
+  exports: [ProductsService]
 })
 export class ProductsModule {}

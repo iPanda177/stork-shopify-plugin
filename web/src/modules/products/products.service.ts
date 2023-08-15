@@ -1,14 +1,16 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Cron, CronExpression } from "@nestjs/schedule";
-
-import { config } from "dotenv";
 import { Model } from "mongoose";
 import shopify from "../../utils/shopify.js";
+
 import { Shop } from "../../schemas/shop.schema.js";
 import { Product } from "../../schemas/product.schema.js";
 import { Reference } from "../../schemas/reference.schema.js";
+
 import { shopifySession } from "../../types.js";
+
+import { config } from "dotenv";
 config();
 
 type ChangedProduct = {
@@ -60,6 +62,7 @@ export class ProductsService {
 
         if (!productInDB) {
           await this.ProductModel.create(product);
+          await this.ReferenceModel.create({ stork_id: product.id, shopify_products_ids: {} });
           changedProducts.push({ type: 'new', product: product });
           continue;
         }
@@ -135,13 +138,8 @@ export class ProductsService {
           const productReference = await this.ReferenceModel.findOne({ stork_id: productData.id });
 
           if (productReference) {
-            const shopifyProductsIds = productReference.shopify_products_ids;
-            const updatedShopifyProductIds = {
-              ...shopifyProductsIds,
-              [session.shop]: newProduct.id,
-            }
-
-            await this.ReferenceModel.updateOne({ stork_id: productData.id }, { shopify_products_ids: updatedShopifyProductIds });
+            productReference.shopify_products_ids[session.shop] = newProduct.id;
+            await productReference.save();
           }
 
           if (!productReference) {
@@ -155,8 +153,18 @@ export class ProductsService {
             await this.ReferenceModel.create(referenceProduct);
           }
         } else if (product.type === 'update' && product.fields) {
-          const shopifyProduct = new shopify.api.rest.Product({ session: session });
-          shopifyProduct.id = productData.id;
+          const referenceProduct = await this.ReferenceModel.findOne({ stork_id: productData.id });
+          
+          if (!referenceProduct) {
+            continue;
+          }
+
+          const shopifyProductID = referenceProduct.shopify_products_ids[session.shop];
+
+          const shopifyProduct = await shopify.api.rest.Product.find({ 
+            session: session,
+            id: shopifyProductID,
+          });
 
           for (const field of product.fields) {
             switch (field) {
@@ -241,4 +249,6 @@ export class ProductsService {
       return reworkedProduct;
     })
   }
+
+  async syncProductsWithShop() {}
 }

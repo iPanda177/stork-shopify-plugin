@@ -14,7 +14,7 @@ import { readFileSync } from "fs";
 import shopify from "./utils/shopify.js";
 import GDPRWebhookHandlers from "./utils/gdpr.js";
 
-import { getShopDataMiddleware } from "./middlewares/get-shop-data.middleware.js";
+import { initializeShop } from "./middlewares/initialize-shop.middleware.js";
 
 import { ProductsModule } from "./modules/products/products.module.js";
 import { ScheduleModule } from "@nestjs/schedule";
@@ -82,11 +82,14 @@ export class AppModule implements NestModule {
             .send(readFileSync(join(STATIC_PATH, "index.html")));
         }
       )
-      .exclude({ path: "/api/(.*)", method: RequestMethod.ALL })
+      .exclude(
+        { path: "/api/(.*)", method: RequestMethod.ALL },
+        { path: "/webhooks/(.*)", method: RequestMethod.ALL }
+      )
       .forRoutes({ path: "/*", method: RequestMethod.ALL });
 
     consumer
-      .apply(getShopDataMiddleware)
+      .apply(initializeShop)
       .forRoutes({ path: "/api/shop", method: RequestMethod.ALL });
   }
 }
