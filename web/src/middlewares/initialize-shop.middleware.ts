@@ -32,7 +32,7 @@ export class initializeShop implements NestMiddleware {
 
     if (!orderPaid) {
       const orderPaidWebhook = new shopify.api.rest.Webhook({session});
-      orderPaidWebhook.address = `${process.env.HOST}/webhooks/orders/paid`;
+      orderPaidWebhook.address = `${process.env.HOST}/api/orders`;
       orderPaidWebhook.topic = 'orders/paid';
       orderPaidWebhook.format = 'json';
       await orderPaidWebhook.save({

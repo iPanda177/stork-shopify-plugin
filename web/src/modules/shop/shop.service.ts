@@ -34,7 +34,7 @@ export class ShopService {
   async authorizeShop(token: string) {
     const checkValidateToken = await fetch(`${process.env.STORK_API_URL}/auth/validate-token`, {
       method: "GET",
-      headers: {Authorization: `Bearer ${process.env.STORK_API_KEY}`}
+      headers: {Authorization: `Bearer ${token}`}
     })
 
     return checkValidateToken.ok;

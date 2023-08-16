@@ -1,18 +1,19 @@
-import { Body, Controller, Post, Res } from "@nestjs/common";
-import { Response } from "express";
-import { OrdersService } from "./orders.service";
+import { Body, Controller, Post, Req, Res } from "@nestjs/common";
+import { Response, Request } from "express";
+import { OrdersService } from "./orders.service.js";
 
-@Controller("/webhooks")
+@Controller('api/orders')
 export class OrdersController {
   constructor(private ordersService: OrdersService) {}
 
-  @Post("orders/paid")
-  async handleOrderPaid(@Body() body: any, @Res() res: Response) {
-    console.log(body)
-
+  @Post()
+  async handleOrderPaid(@Req() req: Request, @Body() body: any, @Res() res: Response) {
     res.sendStatus(200);
+    const shopDomain = req.get('x-shopify-shop-domain');
+    if (!shopDomain) {
+      throw new Error('Missing shop domain');
+    }
 
-  
-    const orderData = await this.ordersService.handleOrderPaid(body);
+    const orderData = await this.ordersService.handleOrderPaid(body, shopDomain);
   }
 }

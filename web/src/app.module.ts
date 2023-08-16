@@ -19,6 +19,7 @@ import { initializeShop } from "./middlewares/initialize-shop.middleware.js";
 import { ProductsModule } from "./modules/products/products.module.js";
 import { ScheduleModule } from "@nestjs/schedule";
 import { ShopModule } from "./modules/shop/shop.module.js";
+import { OrdersModule } from "./modules/orders/orders.module.js";
 
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -34,6 +35,7 @@ const STATIC_PATH =
     ScheduleModule.forRoot(),
     ShopModule,
     ProductsModule,
+    OrdersModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -58,6 +60,7 @@ export class AppModule implements NestModule {
     // Validate Authenticated Session Middleware for Backend Routes
     consumer
       .apply(shopify.validateAuthenticatedSession())
+      .exclude({ path: "/api/orders", method: RequestMethod.POST })
       .forRoutes({ path: "/api/*", method: RequestMethod.ALL });
 
     // Webhooks
@@ -84,7 +87,6 @@ export class AppModule implements NestModule {
       )
       .exclude(
         { path: "/api/(.*)", method: RequestMethod.ALL },
-        { path: "/webhooks/(.*)", method: RequestMethod.ALL }
       )
       .forRoutes({ path: "/*", method: RequestMethod.ALL });
 
