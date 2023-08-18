@@ -23,3 +23,15 @@ export interface Webhook {
 export interface Webhooks {
   data: Webhook[],
 }
+
+export type ProductVariant = {
+  id: string;
+  quantity: string;
+}
+
+
+export type ChangedProduct = {
+  type: string;
+  product: any;
+  fields?: string[];
+}

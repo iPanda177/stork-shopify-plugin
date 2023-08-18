@@ -6,8 +6,8 @@ import {
 } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { MongooseModule } from "@nestjs/mongoose";
-import { Request, Response, NextFunction } from "express";
 
+import { Request, Response, NextFunction } from "express";
 import { join } from "path";
 import { readFileSync } from "fs";
 
@@ -60,7 +60,10 @@ export class AppModule implements NestModule {
     // Validate Authenticated Session Middleware for Backend Routes
     consumer
       .apply(shopify.validateAuthenticatedSession())
-      .exclude({ path: "/api/orders", method: RequestMethod.POST })
+      .exclude(
+        { path: "/api/orders", method: RequestMethod.POST },
+        { path: "/api/product/check-qty", method: RequestMethod.GET },
+      )
       .forRoutes({ path: "/api/*", method: RequestMethod.ALL });
 
     // Webhooks

@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import { Model } from "mongoose";
@@ -8,16 +8,10 @@ import { Shop } from "../../schemas/shop.schema.js";
 import { Product } from "../../schemas/product.schema.js";
 import { Reference } from "../../schemas/reference.schema.js";
 
-import { shopifySession } from "../../types.js";
+import { shopifySession, ProductVariant, ChangedProduct } from "../../types.js";
 
 import { config } from "dotenv";
 config();
-
-type ChangedProduct = {
-  type: string;
-  product: Product;
-  fields?: string[];
-}
 
 @Injectable()
 export class ProductsService {
@@ -127,7 +121,7 @@ export class ProductsService {
           const newProduct = new shopify.api.rest.Product({ session: session });
           newProduct.title = productData.title;
           newProduct.body_html = productData.description;
-          newProduct.images = productData.images.map((image) => ({ src: image }));
+          newProduct.images = productData.images.map((image: string) => ({ src: image }));
           newProduct.variants = [{ price: productData.price, inventory_quantity: productData.quantity, sku: productData.sku }];
           newProduct.product_type = productData.properties.type;
           newProduct.published = false;
@@ -177,7 +171,7 @@ export class ProductsService {
                 break;
               
               case 'images':
-                shopifyProduct.images = productData.images.map((image) => ({ src: image }));
+                shopifyProduct.images = productData.images.map((image: string) => ({ src: image }));
                 break;
 
               case 'price':
@@ -250,5 +244,42 @@ export class ProductsService {
     })
   }
 
-  async syncProductsWithShop() {}
+  async checkProductQty(products: ProductVariant[], shop: string) {
+    const shopData = await this.ShopModel.findOne({ domain: shop });
+
+    if (!shopData) {
+      throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
+    }
+
+    const session: shopifySession = shopData.session;
+
+    for (const product of products) {
+      const shopifyVariant = await shopify.api.rest.Variant.find({
+        session: session,
+        id: +product.id,
+      });
+    
+      if (!shopifyVariant) {
+        throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
+      }
+  
+      const reference = await this.ReferenceModel.findOne({ shopify_products_ids: { [shop]: shopifyVariant.product_id } });
+  
+      if (!reference) {
+        throw new HttpException('Reference not found', HttpStatus.NOT_FOUND);
+      }
+  
+      const storkProduct = await this.ProductModel.findOne({ id: reference.stork_id });
+  
+      if (!storkProduct) {
+        throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
+      }
+  
+      if (storkProduct.quantity >= +product.quantity) {
+        return false;
+      }
+    }
+
+    return true;
+  }
 }

@@ -1,0 +1,19 @@
+<script>
+  window.stork_plugin = {
+    domain: '{{ shop.permanent_domain }}',
+  }
+</script>
+<script 
+  class="stork-plugin"
+  src="{{ 'stork-script.js' | asset_url }}"
+  type="module"
+  defer>
+</script>
+
+{% schema %}
+{
+  "name": "Stork plugin",
+  "target": "body"
+}
+{% endschema %}
+

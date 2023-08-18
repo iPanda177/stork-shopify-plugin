@@ -18,14 +18,13 @@ export class initializeShop implements NestMiddleware {
     const webhooks: Webhooks = await shopify.api.rest.Webhook.all({
       session
     });
-    console.log(webhooks.data)
 
     if (!shop) {
       await this.ShopModel.create({ domain: session.shop, session: session });
     }
 
     if (shop && shop.session.accessToken !== session.accessToken) {
-      await shop.overwrite({ session: session });
+      await this.ShopModel.updateOne({ domain: session.shop }, { session: session });
     }
 
     const orderPaid = webhooks.data.find(webhook => webhook.topic.includes('orders/paid'));
