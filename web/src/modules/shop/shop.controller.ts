@@ -9,9 +9,11 @@ export class ShopController {
 
   @Get()
   async getShop(@Res() res: Response) {
+    console.log('endpoint')
     const { shop } = res.locals.shopify.session;
     const shopData = await this.shopService.getShop(shop);
-    res.send(shopData);
+
+    shopData ? res.status(200).send(shopData) : res.status(404).send('Shop not found');
   }
 
   @Get("auth")
@@ -21,7 +23,9 @@ export class ShopController {
 
     isValidToken ? res.status(200).send('Authorized') : res.status(401).send('Unauthorized');
 
-    const session = res.locals.shopify.session;
-    const syncShop = await this.shopService.syncShop(session);
+    if (isValidToken) {
+      const session = res.locals.shopify.session;
+      const syncShop = await this.shopService.syncShop(session);
+    }
   }
 }

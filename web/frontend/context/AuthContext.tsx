@@ -28,6 +28,7 @@ const AuthContextProvider: React.FC<Props> = ({ children }) => {
   useEffect(() => {
     if (isLoading) {
       const getShopData = async () => {
+        console.log('fetching shop data');
         const res = await fetch('/api/shop');
 
         if (res.ok) {
@@ -41,7 +42,7 @@ const AuthContextProvider: React.FC<Props> = ({ children }) => {
 
       getShopData();
     }
-  }, [auth]);
+  }, [auth, isLoading]);
 
   return (
     <AuthContext.Provider value={{ auth, updateContext }}>
