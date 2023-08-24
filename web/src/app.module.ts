@@ -22,6 +22,7 @@ import { ShopModule } from "./modules/shop/shop.module.js";
 import { OrdersModule } from "./modules/orders/orders.module.js";
 
 import * as dotenv from 'dotenv';
+import { MandatoryModule } from "./modules/mandatory/mandatory.module.js";
 dotenv.config();
 
 const STATIC_PATH =
@@ -36,6 +37,7 @@ const STATIC_PATH =
     ShopModule,
     ProductsModule,
     OrdersModule,
+    MandatoryModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -62,7 +64,9 @@ export class AppModule implements NestModule {
       .apply(shopify.validateAuthenticatedSession())
       .exclude(
         { path: "/api/orders", method: RequestMethod.POST },
-        { path: "/api/product/check-qty", method: RequestMethod.GET },
+        { path: "/api/product/check-qty", method: RequestMethod.POST },
+        { path: "/api/mandatory/(.*)", method: RequestMethod.POST },
+        { path: "/api/webhooks", method: RequestMethod.POST },
       )
       .forRoutes({ path: "/api/*", method: RequestMethod.ALL });
 
@@ -90,6 +94,9 @@ export class AppModule implements NestModule {
       )
       .exclude(
         { path: "/api/(.*)", method: RequestMethod.ALL },
+        { path: "/api/mandatory/(.*)", method: RequestMethod.ALL },
+        { path: "/api/product/check-qty", method: RequestMethod.POST },
+        { path: "/api/webhooks", method: RequestMethod.POST },
       )
       .forRoutes({ path: "/*", method: RequestMethod.ALL });
 

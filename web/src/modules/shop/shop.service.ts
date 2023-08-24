@@ -41,32 +41,37 @@ export class ShopService {
   }
 
   async syncShop(session: shopifySession) {
-    await this.ShopModel.updateOne({ domain: session.shop }, { authorized: true });
+    try {
+      await this.ShopModel.updateOne({ domain: session.shop }, { authorized: true });
 
-    const productsInDB = await this.ProductModel.find({});
+      const productsInDB = await this.ProductModel.find({});
 
-    const requestsPerSecond = 2;
-    const interval = 1000 / requestsPerSecond; 
+      const requestsPerSecond = 2;
+      const interval = 1000 / requestsPerSecond; 
 
-    for (const product of productsInDB) {
-      const newProduct = new shopify.api.rest.Product({ session: session });
-      newProduct.title = product.title;
-      newProduct.body_html = product.description;
-      newProduct.images = product.images.map((image) => ({ src: image }));
-      newProduct.variants = [{ price: product.price, inventory_quantity: product.quantity, sku: product.sku }];
-      newProduct.product_type = product.properties.type;
-      newProduct.published = false;
-      await newProduct.save({
-        update: true,
-      });
+      for (const product of productsInDB) {
+        const newProduct = new shopify.api.rest.Product({ session: session });
+        newProduct.title = product.title;
+        newProduct.body_html = product.description;
+        newProduct.images = product.images.map((image) => ({ src: image }));
+        newProduct.variants = [{ price: product.price, inventory_quantity: product.quantity, sku: product.sku }];
+        newProduct.product_type = product.properties.type;
+        newProduct.published = false;
+        await newProduct.save({
+          update: true,
+        });
 
-      const referenceProduct = await this.ReferenceModel.findOne({ stork_id: product.id });
-      if (referenceProduct) {
-        referenceProduct.shopify_products_ids[session.shop] = newProduct.id;
-        await referenceProduct.save();
-      }
+        const referenceProduct = await this.ReferenceModel.findOne({ stork_id: product.id });
+        console.log(referenceProduct)
+        if (referenceProduct) {
+          referenceProduct.shopify_products_ids[session.shop] = newProduct.id;
+          await this.ReferenceModel.updateOne({ stork_id: referenceProduct.stork_id }, { shopify_products_ids: referenceProduct.shopify_products_ids });
+        }
 
-      await new Promise((resolve) => setTimeout(resolve, interval));
-    };
+        await new Promise((resolve) => setTimeout(resolve, interval));
+      };
+    } catch (err) {
+      console.log(err)
+    }
   }
 }

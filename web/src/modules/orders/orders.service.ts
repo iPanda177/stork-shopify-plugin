@@ -18,19 +18,19 @@ export class OrdersService {
   
     const products = await Promise.all(line_items.map(async (item: any) => {
       const reference = referenceList.find((ref: any) => ref.shopify_products_ids[shopDomain] === item.product_id);
-
       if (!reference) {
         return;
       }
 
       const product = await this.ProductModel.findOneAndUpdate({ id: reference.stork_id }, { $inc: { quantity: -item.quantity } }, { new: true });
-
+      console.log(product)
       if (!product) {
         return;
       }
 
       return { product: product.id, quantity: item.quantity, sku: product.sku };
     }));
+
     const filteredProducts = products.filter((product: any) => !!product);
 
     if (!filteredProducts.length) {
@@ -42,11 +42,11 @@ export class OrdersService {
       notes: note,
       externalOrderId: order_number,
       shippingDetails: {
-        address: shipping_address.address1,
-        city: shipping_address.city,
-        country: shipping_address.country,
-        state: shipping_address.province,
-        apartment: shipping_address.address2,
+        address: shipping_address?.address1 || null,
+        city: shipping_address?.city || null,
+        country: shipping_address?.country || null,
+        state: shipping_address?.province || null,
+        apartment: shipping_address?.address2 || null,
       }
     }]
 

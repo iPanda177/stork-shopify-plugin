@@ -21,7 +21,7 @@ export class ProductsService {
     @InjectModel(Reference.name) private ReferenceModel: Model<Reference>,
   ) {}
 
-  @Cron(CronExpression.EVERY_30_SECONDS)
+  // @Cron(CronExpression.EVERY_30_SECONDS)
   async checkProducts() {
     const products = await fetch(`${process.env.STORK_API_URL}/products/full-data`, {
       method: "GET",
@@ -263,8 +263,9 @@ export class ProductsService {
         throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
       }
   
-      const reference = await this.ReferenceModel.findOne({ shopify_products_ids: { [shop]: shopifyVariant.product_id } });
-  
+      const referenceList = await this.ReferenceModel.find({});
+      const reference = referenceList.find((ref) => ref.shopify_products_ids[shop] === shopifyVariant.product_id);
+      
       if (!reference) {
         throw new HttpException('Reference not found', HttpStatus.NOT_FOUND);
       }
@@ -275,7 +276,7 @@ export class ProductsService {
         throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
       }
   
-      if (storkProduct.quantity >= +product.quantity) {
+      if (storkProduct.quantity < +product.quantity) {
         return false;
       }
     }
