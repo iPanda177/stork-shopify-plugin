@@ -50,6 +50,10 @@ export class OrdersService {
       }
     }]
 
-    console.log(orderData);
+    const sendOrder = await fetch(`${process.env.STORK_API_URL}/orders`, {
+      method: "POST",
+      headers: {Authorization: `Bearer ${process.env.STORK_API_KEY}`},
+      body: JSON.stringify(orderData),
+    })
   }
 }
