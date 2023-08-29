@@ -21,7 +21,7 @@ export class ProductsService {
     @InjectModel(Reference.name) private ReferenceModel: Model<Reference>,
   ) {}
 
-  // @Cron(CronExpression.EVERY_30_SECONDS)
+  @Cron(CronExpression.EVERY_10_MINUTES)
   async checkProducts() {
     const products = await fetch(`${process.env.STORK_API_URL}/products/full-data`, {
       method: "GET",

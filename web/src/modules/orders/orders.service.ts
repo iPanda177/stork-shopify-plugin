@@ -28,7 +28,7 @@ export class OrdersService {
         return;
       }
 
-      return { product: product.id, quantity: item.quantity, sku: product.sku };
+      return { product: product.id, quantity: item.quantity };
     }));
 
     const filteredProducts = products.filter((product: any) => !!product);
@@ -41,7 +41,7 @@ export class OrdersService {
       products: filteredProducts,
       notes: note,
       externalOrderId: order_number,
-      shippingDetails: {
+      address: {
         address: shipping_address?.address1 || null,
         city: shipping_address?.city || null,
         country: shipping_address?.country || null,
@@ -51,5 +51,13 @@ export class OrdersService {
     }]
 
     console.log(orderData);
+
+    const sendOrder = await fetch(`${process.env.STORK_API_URL}/orders`, {
+      method: "POST",
+      headers: {Authorization: `Bearer ${process.env.STORK_API_KEY}`},
+      body: JSON.stringify(orderData),
+    })
+
+    console.log(sendOrder.ok);
   }
 }
