@@ -21,9 +21,9 @@ export class ProductsService {
     @InjectModel(Reference.name) private ReferenceModel: Model<Reference>,
   ) {}
 
-  // @Cron(CronExpression.EVERY_30_SECONDS)
+  @Cron(CronExpression.EVERY_10_MINUTES)
   async checkProducts() {
-    const products = await fetch(`${process.env.STORK_API_URL}/products/full-data`, {
+    const products = await fetch(`${process.env.STORK_API_URL_DEV}/products/full-data`, {
       method: "GET",
       headers: {Authorization: `Bearer ${process.env.STORK_API_KEY}`}
     })
@@ -119,15 +119,63 @@ export class ProductsService {
 
         if (product.type === 'new') {
           const newProduct = new shopify.api.rest.Product({ session: session });
-          newProduct.title = productData.title;
-          newProduct.body_html = productData.description;
-          newProduct.images = productData.images.map((image: string) => ({ src: image }));
+
+          const metafields: {[index: string]: any} = {};
+
+          for (const key in product) {
+            switch (key) {
+              case 'title':
+                newProduct.title = productData[key];
+                break;
+
+              case 'description':
+                newProduct.body_html = productData[key];
+                break;
+
+              case 'images':
+                newProduct.images = productData[key].map((image: string) => ({ src: image }));
+                break;
+
+              case 'properties':
+                for (const property of productData[key]) {
+                  if (property.key === 'category') {
+                    newProduct.product_type = property[key];
+                    continue;
+                  }
+
+                  if (property.key === 'tags') {
+                    newProduct.tags = property[key];
+                    continue;
+                  }
+
+                  metafields[property.key] = property.value;
+                }
+
+              default:
+                break;
+            }
+          }
+
           newProduct.variants = [{ price: productData.price, inventory_quantity: productData.quantity, sku: productData.sku }];
-          newProduct.product_type = productData.properties.type;
           newProduct.published = false;
           await newProduct.save({
             update: true,
           });
+
+          if (Object.keys(metafields).length) {
+            for (const key in metafields) {
+              const metafield = new shopify.api.rest.Metafield({ session: session });
+              metafield.namespace = 'stork';
+              metafield.key = key;
+              metafield.value = metafields[key];
+              metafield.value_type = 'string';
+              metafield.owner_resource = 'product';
+              metafield.owner_id = newProduct.id;
+              await metafield.save({
+                update: true,
+              });
+            }
+          }
 
           const productReference = await this.ReferenceModel.findOne({ stork_id: productData.id });
 

@@ -19,6 +19,8 @@ export class initializeShop implements NestMiddleware {
       session
     });
 
+    console.log(webhooks);
+
     if (!shop) {
       await this.ShopModel.create({ domain: session.shop, session: session });
     }

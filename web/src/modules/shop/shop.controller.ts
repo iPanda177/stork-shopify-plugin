@@ -9,7 +9,6 @@ export class ShopController {
 
   @Get()
   async getShop(@Res() res: Response) {
-    console.log('endpoint')
     const { shop } = res.locals.shopify.session;
     const shopData = await this.shopService.getShop(shop);
 

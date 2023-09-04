@@ -12,6 +12,7 @@ import { AuthContextProvider } from './context/AuthContext';
 export default function App() {
   // Any .tsx or .jsx files in /pages will become a route
   // See documentation for <Routes /> for more info
+  // @ts-ignore
   const pages = import.meta.globEager('./pages/**/!(*.test.[jt]sx)*.([jt]sx)');
 
   return (

@@ -12,7 +12,7 @@ export class OrdersService {
   ) {}
 
   async handleOrderPaid(body: any, shopDomain: string) {
-    const { order_number, shipping_address, line_items, note } = body;
+    const { order_number, shipping_address, line_items, note, customer } = body;
 
     const referenceList = await this.ReferenceModel.find({});
   
@@ -23,12 +23,11 @@ export class OrdersService {
       }
 
       const product = await this.ProductModel.findOneAndUpdate({ id: reference.stork_id }, { $inc: { quantity: -item.quantity } }, { new: true });
-      console.log(product)
       if (!product) {
         return;
       }
 
-      return { product: product.id, quantity: item.quantity, sku: product.sku };
+      return { product: product.id, quantity: item.quantity };
     }));
 
     const filteredProducts = products.filter((product: any) => !!product);
@@ -38,22 +37,30 @@ export class OrdersService {
     }
 
     const orderData = [{
-      products: filteredProducts,
-      notes: note,
       externalOrderId: order_number,
-      shippingDetails: {
+      notes: note || null,
+      sales_channel: "shopify",
+      products: filteredProducts,
+      address: {
         address: shipping_address?.address1 || null,
         city: shipping_address?.city || null,
         country: shipping_address?.country || null,
+        zipcode: shipping_address.zip || null,
         state: shipping_address?.province || null,
         apartment: shipping_address?.address2 || null,
+        first_name: shipping_address?.first_name || null,
+        last_name: shipping_address?.last_name || null,
+        email: customer?.email || null,
+        phone: shipping_address?.phone || null,
       }
     }]
 
-    const sendOrder = await fetch(`${process.env.STORK_API_URL}/orders`, {
+    const sendOrder = await fetch(`${process.env.STORK_API_URL_DEV}/orders`, {
       method: "POST",
       headers: {Authorization: `Bearer ${process.env.STORK_API_KEY}`},
       body: JSON.stringify(orderData),
     })
+
+    console.log(sendOrder.body, sendOrder.status, sendOrder);
   }
 }

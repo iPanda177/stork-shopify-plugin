@@ -1,13 +1,14 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-name = "stork-dev"
-client_id = "abd04261ccb373ed459a56202f644a69"
+name = "stork-plugin"
+client_id = "b8ad70fd7823781193947cf9add5877f"
 application_url = "https://stork-app.dev-test.pro"
 embedded = true
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
 scopes = "read_products,write_products,read_orders,write_orders"
+use_legacy_install_flow = true
 
 [auth]
 redirect_urls = [
@@ -19,14 +20,9 @@ redirect_urls = [
 [webhooks]
 api_version = "2023-07"
 
-  [webhooks.privacy_compliance]
-  customer_deletion_url = "https://stork-app.dev-test.pro/api/mandatory/customers/redact"
-  customer_data_request_url = "https://stork-app.dev-test.pro/api/mandatory/customers/data_request"
-  shop_deletion_url = "https://stork-app.dev-test.pro/api/mandatory/shop/redact"
-
 [pos]
 embedded = false
 
 [build]
 automatically_update_urls_on_dev = true
-dev_store_url = "better-carts-dev.myshopify.com"
+dev_store_url = "stork-app-test.myshopify.com"
