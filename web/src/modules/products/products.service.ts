@@ -2,13 +2,13 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import { Model } from "mongoose";
-import shopify from "../../utils/shopify.js";
+import shopify from "../../utils/shopify.ts";
 
-import { Shop } from "../../schemas/shop.schema.js";
-import { Product } from "../../schemas/product.schema.js";
-import { Reference } from "../../schemas/reference.schema.js";
+import { Shop } from "../../schemas/shop.schema.ts";
+import { Product } from "../../schemas/product.schema.ts";
+import { Reference } from "../../schemas/reference.schema.ts";
 
-import { shopifySession, ProductVariant, ChangedProduct } from "../../types.js";
+import { shopifySession, ProductVariant, ChangedProduct } from "../../types.ts";
 
 import { config } from "dotenv";
 config();

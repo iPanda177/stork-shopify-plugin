@@ -2,9 +2,9 @@ import { Injectable, NestMiddleware } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { NextFunction, Response, Request } from "express";
 import { Model } from "mongoose";
-import { Shop } from "../schemas/shop.schema.js";
-import { Webhook, Webhooks } from "../types.js";
-import shopify from "../utils/shopify.js";
+import { Shop } from "../schemas/shop.schema.ts";
+import { Webhook, Webhooks } from "../types.ts";
+import shopify from "../utils/shopify.ts";
 
 @Injectable()
 export class initializeShop implements NestMiddleware {
@@ -19,7 +19,7 @@ export class initializeShop implements NestMiddleware {
       session
     });
 
-    console.log(webhooks);
+    console.log(webhooks.data);
 
     if (!shop) {
       await this.ShopModel.create({ domain: session.shop, session: session });

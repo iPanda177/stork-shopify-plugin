@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Query, Res } from "@nestjs/common";
 import { Response } from "express";
-import { ShopDocument } from "../../schemas/shop.schema.js";
-import { ShopService } from "./shop.service.js";
+import { ShopDocument } from "../../schemas/shop.schema.ts";
+import { ShopService } from "./shop.service.ts";
 
 @Controller("api/shop")
 export class ShopController {

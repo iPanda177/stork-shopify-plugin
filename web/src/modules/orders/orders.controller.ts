@@ -1,6 +1,6 @@
 import { Body, Controller, Post, Req, Res } from "@nestjs/common";
 import { Response, Request } from "express";
-import { OrdersService } from "./orders.service.js";
+import { OrdersService } from "./orders.service.ts";
 
 @Controller('api/orders')
 export class OrdersController {

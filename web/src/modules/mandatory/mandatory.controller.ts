@@ -1,7 +1,7 @@
 import { Body, Controller, Headers, Post, Res } from "@nestjs/common";
 import { Response } from "express";
 
-import { MandatoryService } from "./mandatory.service.js";
+import { MandatoryService } from "./mandatory.service.ts";
 
 import crypto from "crypto";
 

@@ -1,7 +1,7 @@
 import { Body, Controller, Post, Query, Res } from "@nestjs/common";
 import { Response } from "express";
-import { ProductsService } from "./products.service.js";
-import { ProductVariant } from "../../types.js";
+import { ProductsService } from "./products.service.ts";
+import { ProductVariant } from "../../types.ts";
 
 @Controller('api/product')
 export class ProductsController {

@@ -1,9 +1,9 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
-import { ProductsSchema } from "../../schemas/product.schema.js";
-import { ReferenceSchema } from "../../schemas/reference.schema.js";
-import { OrdersController } from "./orders.controller.js";
-import { OrdersService } from "./orders.service.js";
+import { ProductsSchema } from "../../schemas/product.schema.ts";
+import { ReferenceSchema } from "../../schemas/reference.schema.ts";
+import { OrdersController } from "./orders.controller.ts";
+import { OrdersService } from "./orders.service.ts";
 
 @Module({
   imports: [MongooseModule.forFeature([

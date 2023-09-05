@@ -1,5 +1,5 @@
 import { NestFactory } from "@nestjs/core";
-import { AppModule } from "./app.module.js";
+import { AppModule } from "./app.module.ts";
 import {
   ExpressAdapter,
   NestExpressApplication,
@@ -7,8 +7,8 @@ import {
 import { Express } from "express";
 import { ValidationPipe } from "@nestjs/common";
 
-const PORT = parseInt(process.env.BACKEND_PORT || process.env.PORT || "", 10);
-// const PORT = 6262;
+// const PORT = parseInt(process.env.BACKEND_PORT || process.env.PORT || "", 10);
+const PORT = 6262;
 console.log(PORT);
 const STATIC_PATH =
   process.env.NODE_ENV === "production"

@@ -1,10 +1,10 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
-import { ShopSchema } from "../../schemas/shop.schema.js";
-import { ProductsSchema } from "../../schemas/product.schema.js";
-import { ProductsController } from "./products.controller.js";
-import { ProductsService } from "./products.service.js";
-import { ReferenceSchema } from "../../schemas/reference.schema.js";
+import { ShopSchema } from "../../schemas/shop.schema.ts";
+import { ProductsSchema } from "../../schemas/product.schema.ts";
+import { ProductsController } from "./products.controller.ts";
+import { ProductsService } from "./products.service.ts";
+import { ReferenceSchema } from "../../schemas/reference.schema.ts";
 
 @Module({
   imports: [MongooseModule.forFeature([

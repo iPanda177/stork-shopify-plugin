@@ -11,18 +11,18 @@ import { Request, Response, NextFunction } from "express";
 import { join } from "path";
 import { readFileSync } from "fs";
 
-import shopify from "./utils/shopify.js";
-import GDPRWebhookHandlers from "./utils/gdpr.js";
+import shopify from "./utils/shopify.ts";
+import GDPRWebhookHandlers from "./utils/gdpr.ts";
 
-import { initializeShop } from "./middlewares/initialize-shop.middleware.js";
+import { initializeShop } from "./middlewares/initialize-shop.middleware.ts";
 
-import { ProductsModule } from "./modules/products/products.module.js";
+import { ProductsModule } from "./modules/products/products.module.ts";
 import { ScheduleModule } from "@nestjs/schedule";
-import { ShopModule } from "./modules/shop/shop.module.js";
-import { OrdersModule } from "./modules/orders/orders.module.js";
+import { ShopModule } from "./modules/shop/shop.module.ts";
+import { OrdersModule } from "./modules/orders/orders.module.ts";
 
 import * as dotenv from 'dotenv';
-import { MandatoryModule } from "./modules/mandatory/mandatory.module.js";
+import { MandatoryModule } from "./modules/mandatory/mandatory.module.ts";
 dotenv.config();
 
 const STATIC_PATH =

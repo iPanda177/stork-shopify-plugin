@@ -1,6 +1,6 @@
 import { DeliveryMethod } from "@shopify/shopify-api";
 import { WebhookHandlersParam } from "@shopify/shopify-app-express";
-import shopify from "./shopify.js";
+import shopify from "./shopify.ts";
 
 const GDPRWebhookHandlers: WebhookHandlersParam = {
   /**

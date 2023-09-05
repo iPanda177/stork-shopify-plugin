@@ -1,12 +1,12 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
-import { ShopController } from "./shop.controller.js";
-import { Shop, ShopSchema } from "../../schemas/shop.schema.js";
-import { ShopService } from "./shop.service.js";
-import { ProductsService } from "../products/products.service.js";
-import { ProductsModule } from "../products/products.module.js";
-import { Product, ProductsSchema } from "../../schemas/product.schema.js";
-import { Reference, ReferenceSchema } from "../../schemas/reference.schema.js";
+import { ShopController } from "./shop.controller.ts";
+import { Shop, ShopSchema } from "../../schemas/shop.schema.ts";
+import { ShopService } from "./shop.service.ts";
+import { ProductsService } from "../products/products.service.ts";
+import { ProductsModule } from "../products/products.module.ts";
+import { Product, ProductsSchema } from "../../schemas/product.schema.ts";
+import { Reference, ReferenceSchema } from "../../schemas/reference.schema.ts";
 
 @Module({
   imports: [MongooseModule.forFeature([

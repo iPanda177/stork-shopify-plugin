@@ -2,14 +2,14 @@ import { HttpException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 
-import { Shop } from "../../schemas/shop.schema.js";
+import { Shop } from "../../schemas/shop.schema.ts";
 
 import { config } from "dotenv";
-import { ProductsService } from "../products/products.service.js";
-import { Product } from "../../schemas/product.schema.js";
-import { shopifySession } from "../../types.js";
-import shopify from "../../utils/shopify.js";
-import { Reference } from "../../schemas/reference.schema.js";
+import { ProductsService } from "../products/products.service.ts";
+import { Product } from "../../schemas/product.schema.ts";
+import { shopifySession } from "../../types.ts";
+import shopify from "../../utils/shopify.ts";
+import { Reference } from "../../schemas/reference.schema.ts";
 config();
 
 @Injectable()

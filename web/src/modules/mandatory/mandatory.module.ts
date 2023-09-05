@@ -1,8 +1,8 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
-import { ShopSchema } from "../../schemas/shop.schema.js";
-import { MandatoryController } from "./mandatory.controller.js";
-import { MandatoryService } from "./mandatory.service.js";
+import { ShopSchema } from "../../schemas/shop.schema.ts";
+import { MandatoryController } from "./mandatory.controller.ts";
+import { MandatoryService } from "./mandatory.service.ts";
 
 @Module({
   controllers: [MandatoryController],

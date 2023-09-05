@@ -4,8 +4,8 @@ import { fileURLToPath } from 'url';
 import https from 'https';
 import react from '@vitejs/plugin-react';
 
-const PORT = process.env.BACKEND_PORT;
-// const PORT = 6262;
+// const PORT = process.env.BACKEND_PORT;
+const PORT = 6262;
 
 if (
   process.env.npm_lifecycle_event === 'build' &&
