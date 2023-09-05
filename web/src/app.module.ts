@@ -25,6 +25,8 @@ import * as dotenv from 'dotenv';
 import { MandatoryModule } from "./modules/mandatory/mandatory.module.ts";
 dotenv.config();
 
+console.log(process.env.MONGO_URI_DEV!)
+
 const STATIC_PATH =
   process.env.NODE_ENV === "production"
     ? `${process.cwd()}/frontend/dist`
@@ -33,7 +35,7 @@ const STATIC_PATH =
 @Module({
   imports: [
     MongooseModule.forRoot(process.env.MONGO_URI_DEV!),
-    ScheduleModule.forRoot(),
+    ScheduleModule.forRoot()
     ShopModule,
     ProductsModule,
     OrdersModule,

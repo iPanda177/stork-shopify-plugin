@@ -1,4 +1,5 @@
-const APP_URL = 'https://stork-app.dev-test.pro';
+// const APP_URL = 'https://stork-app.dev-test.pro';
+const APP_URL = 'https://stork-shopify.com';
 
 (function initializeStorkPlugin() {
   swapAddToCartBtn();
