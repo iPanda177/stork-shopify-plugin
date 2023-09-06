@@ -6,6 +6,7 @@ import react from '@vitejs/plugin-react';
 
 // const PORT = process.env.BACKEND_PORT;
 const PORT = 6262;
+console.log(process.env.SHOPIFY_API_KEY, 'API_KEY_VITE')
 
 if (
   process.env.npm_lifecycle_event === 'build' &&
