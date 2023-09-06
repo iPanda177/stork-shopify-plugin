@@ -25,7 +25,6 @@ import * as dotenv from 'dotenv';
 import { MandatoryModule } from "./modules/mandatory/mandatory.module.ts";
 dotenv.config();
 
-console.log(process.env.MONGO_URI_DEV!)
 
 const STATIC_PATH =
   process.env.NODE_ENV === "production"

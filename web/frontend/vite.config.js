@@ -3,6 +3,8 @@ import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import https from 'https';
 import react from '@vitejs/plugin-react';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 // const PORT = process.env.BACKEND_PORT;
 const PORT = 6262;
