@@ -6,6 +6,8 @@ import react from '@vitejs/plugin-react';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
+console.log(process.env)
+
 // const PORT = process.env.BACKEND_PORT;
 const PORT = 6262;
 console.log(process.env.SHOPIFY_API_KEY, 'API_KEY_VITE')
