@@ -33,7 +33,7 @@ const STATIC_PATH =
 
 @Module({
   imports: [
-    MongooseModule.forRoot(process.env.MONGO_URI!),
+    MongooseModule.forRoot(process.env.MONGO_URI_DEV!),
     ScheduleModule.forRoot(),
     ShopModule,
     ProductsModule,

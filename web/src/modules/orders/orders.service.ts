@@ -36,8 +36,8 @@ export class OrdersService {
       return;
     }
 
-    const orderData = [{
-      externalOrderId: order_number,
+    const orderData = {
+      external_order_id: order_number,
       notes: note || null,
       sales_channel: "shopify",
       products: filteredProducts,
@@ -53,11 +53,14 @@ export class OrdersService {
         email: customer?.email || null,
         phone: shipping_address?.phone || null,
       }
-    }]
+    }
 
     const sendOrder = await fetch(`${process.env.STORK_API_URL_DEV}/orders`, {
       method: "POST",
-      headers: {Authorization: `Bearer ${process.env.STORK_API_KEY}`},
+      headers: {
+        Authorization: `Bearer ${process.env.STORK_API_KEY}`,
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(orderData),
     })
 

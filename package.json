@@ -13,8 +13,8 @@
     "toml": "shopify app config push"
   },
   "dependencies": {
-    "@shopify/app": "3.48.5",
-    "@shopify/cli": "3.48.5"
+    "@shopify/app": "^3.49.3",
+    "@shopify/cli": "^3.49.3"
   },
   "author": "Tomoya Nakano"
 }
