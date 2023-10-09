@@ -37,7 +37,9 @@ export class ShopService {
       headers: {Authorization: `Bearer ${token}`}
     })
 
-    return checkValidateToken.ok;
+    const resBody = await checkValidateToken.json();
+
+    return resBody.statusCode === 200;
   }
 
   async syncShop(session: shopifySession) {

@@ -18,7 +18,8 @@ export class App {
   public async start(server: Express) {
     const app = await NestFactory.create<NestExpressApplication>(
       AppModule,
-      new ExpressAdapter(server)
+      new ExpressAdapter(server),
+
     );
     app.useGlobalPipes(new ValidationPipe());
     app.useStaticAssets(STATIC_PATH, { index: false });
