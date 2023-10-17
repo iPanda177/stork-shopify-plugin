@@ -3,16 +3,20 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { Product } from "../../schemas/product.schema.ts";
 import { Reference } from "../../schemas/reference.schema.ts";
+import { Shop } from "../../schemas/shop.schema.ts";
 
 @Injectable()
 export class OrdersService {
   constructor(
     @InjectModel(Reference.name) private ReferenceModel: Model<Reference>,
-    @InjectModel(Product.name) private ProductModel: Model<Product>, 
+    @InjectModel(Product.name) private ProductModel: Model<Product>,
+    @InjectModel(Shop.name) private ShopModel: Model<Shop>,
   ) {}
 
   async handleOrderPaid(body: any, shopDomain: string) {
     const { order_number, shipping_address, line_items, note, customer } = body;
+
+    const shop = await this.ShopModel.findOne({ domain: shopDomain });
 
     const referenceList = await this.ReferenceModel.find({});
   
@@ -58,7 +62,7 @@ export class OrdersService {
     const sendOrder = await fetch(`${process.env.STORK_API_URL_DEV}/orders`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${process.env.STORK_API_KEY}`,
+        Authorization: `Bearer ${shop?.stork_token || process.env.STORK_API_TOKEN}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(orderData),
