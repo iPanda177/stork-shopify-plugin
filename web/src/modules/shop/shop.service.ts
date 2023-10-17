@@ -87,7 +87,7 @@ export class ShopService {
                 break;
 
               case 'images':
-                newProduct.images = product[key].map((image) => ({src: image}));
+                newProduct.images = product[key].map((image: any) => ({src: image}));
                 break;
 
               case 'properties':
