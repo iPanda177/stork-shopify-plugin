@@ -31,6 +31,9 @@ export class Product {
 
   @Prop({ type: Object })
   properties: any;
+
+  @Prop()
+  shop: string;
 }
 
 export const ProductsSchema = SchemaFactory.createForClass(Product);

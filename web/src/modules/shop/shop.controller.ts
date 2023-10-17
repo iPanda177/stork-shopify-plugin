@@ -24,7 +24,7 @@ export class ShopController {
 
     if (isValidToken) {
       const session = res.locals.shopify.session;
-      const syncShop = await this.shopService.syncShop(session);
+      const syncShop = await this.shopService.syncShop(session, token);
     }
   }
 }

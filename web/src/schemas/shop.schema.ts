@@ -14,6 +14,9 @@ export class Shop {
 
   @Prop({ type: Object })
   session: shopifySession;
+
+  @Prop()
+  stork_token: string;
 }
 
 export const ShopSchema = SchemaFactory.createForClass(Shop);

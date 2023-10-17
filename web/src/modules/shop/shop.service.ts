@@ -42,35 +42,55 @@ export class ShopService {
     return resBody.statusCode === 200;
   }
 
-  async syncShop(session: shopifySession) {
+  async syncShop(session: shopifySession, token: string) {
     try {
-      await this.ShopModel.updateOne({ domain: session.shop }, { authorized: true });
+      await this.ShopModel.updateOne({ domain: session.shop }, { authorized: true, session: session, stork_token: token });
 
-      const productsInDB = await this.ProductModel.find({});
+      const products = await fetch(`${process.env.STORK_API_URL_DEV}/products/full-data`, {
+        method: "GET",
+        headers: {Authorization: `Bearer ${token}`}
+      })
 
-      const requestsPerSecond = 2;
-      const interval = 1000 / requestsPerSecond; 
+      if (products.ok) {
+        const productsJson = await products.json();
 
-      for (const product of productsInDB) {
-        const newProduct = new shopify.api.rest.Product({ session: session });
+        if (!productsJson.products.length) return;
 
-        const metafields: {[index: string]: any} = {};
+        const reworkedProducts = this.productService.reworkProducts(productsJson.products, session.shop);
 
-        for (const key in product) {
-          switch (key) {
-            case 'title':
+        const referenceProducts = reworkedProducts.map((product) => {
+          return {
+            stork_id: product.id,
+            shopify_products_ids: {},
+          };
+        });
+
+        await this.ProductModel.insertMany(reworkedProducts);
+        await this.ReferenceModel.insertMany(referenceProducts);
+
+        const requestsPerSecond = 1;
+        const interval = 1000 / requestsPerSecond;
+
+        for (const product of reworkedProducts) {
+          const newProduct = new shopify.api.rest.Product({session: session});
+
+          const metafields: { [index: string]: any } = {};
+
+          for (const key in product) {
+            switch (key) {
+              case 'title':
                 newProduct.title = product[key];
                 break;
 
-            case 'description':
+              case 'description':
                 newProduct.body_html = product[key];
                 break;
 
-            case 'images':
-                newProduct.images = product[key].map((image) => ({ src: image }));
+              case 'images':
+                newProduct.images = product[key].map((image) => ({src: image}));
                 break;
 
-            case 'properties':
+              case 'properties':
                 for (const property in product[key]) {
                   if (property === 'category') {
                     newProduct.product_type = product[key][property];
@@ -85,41 +105,42 @@ export class ShopService {
                   metafields[property] = product[key][property];
                 }
 
-            default:
+              default:
                 break;
+            }
           }
-        }
 
-        newProduct.variants = [{ price: product.price, inventory_quantity: product.quantity, sku: product.sku }];
-        newProduct.published = false;
-        await newProduct.save({
-          update: true,
-        });
+          newProduct.variants = [{price: product.price, inventory_quantity: product.quantity, sku: product.sku}];
+          newProduct.published = false;
+          await newProduct.save({
+            update: true,
+          });
 
-        if (Object.keys(metafields).length) {
-          for (const key in metafields) {
-            if (!metafields[key]) continue;
+          if (Object.keys(metafields).length) {
+            for (const key in metafields) {
+              if (!metafields[key]) continue;
 
-            const metafield = new shopify.api.rest.Metafield({ session: session });
-            metafield.namespace = 'stork';
-            metafield.key = key;
-            metafield.value = metafields[key];
-            metafield.type = 'single_line_text_field';
-            metafield.product_id = newProduct.id;
-            await metafield.save({
-              update: true,
-            });
+              const metafield = new shopify.api.rest.Metafield({session: session});
+              metafield.namespace = 'stork';
+              metafield.key = key;
+              metafield.value = metafields[key];
+              metafield.type = 'single_line_text_field';
+              metafield.product_id = newProduct.id;
+              await metafield.save({
+                update: true,
+              });
+            }
           }
+
+          const referenceProduct = await this.ReferenceModel.findOne({stork_id: product.id});
+
+          if (referenceProduct) {
+            referenceProduct.shopify_products_ids[session.shop] = newProduct.id;
+            await this.ReferenceModel.updateOne({stork_id: referenceProduct.stork_id}, {shopify_products_ids: referenceProduct.shopify_products_ids});
+          }
+
+          await new Promise((resolve) => setTimeout(resolve, interval));
         }
-
-        const referenceProduct = await this.ReferenceModel.findOne({ stork_id: product.id });
-
-        if (referenceProduct) {
-          referenceProduct.shopify_products_ids[session.shop] = newProduct.id;
-          await this.ReferenceModel.updateOne({ stork_id: referenceProduct.stork_id }, { shopify_products_ids: referenceProduct.shopify_products_ids });
-        }
-
-        await new Promise((resolve) => setTimeout(resolve, interval));
       }
     } catch (err) {
       console.log(err)
