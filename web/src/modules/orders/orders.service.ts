@@ -117,5 +117,7 @@ export class OrdersService {
     await fulfillment.save({
       update: true,
     });
+
+    return true;
   }
 }
