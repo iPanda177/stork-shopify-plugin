@@ -2,7 +2,7 @@
 
 name = "stork-dev"
 client_id = "abd04261ccb373ed459a56202f644a69"
-application_url = "https://stork-plugin.dev-test.pro"
+application_url = "https://movers-monica-petite-auckland.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,22 +11,22 @@ scopes = "read_products,write_products,read_orders,write_orders"
 
 [auth]
 redirect_urls = [
-  "https://stork-plugin.dev-test.pro/auth/callback",
-  "https://stork-plugin.dev-test.pro/auth/shopify/callback",
-  "https://stork-plugin.dev-test.pro/api/auth/callback"
+  "https://movers-monica-petite-auckland.trycloudflare.com/auth/callback",
+  "https://movers-monica-petite-auckland.trycloudflare.com/auth/shopify/callback",
+  "https://movers-monica-petite-auckland.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
 api_version = "2023-07"
 
   [webhooks.privacy_compliance]
-  customer_deletion_url = "https://integral-amino-reflections-readers.trycloudflare.com/api/mandatory/customers/redact"
-  customer_data_request_url = "https://integral-amino-reflections-readers.trycloudflare.com/api/mandatory/customers/data_request"
-  shop_deletion_url = "https://integral-amino-reflections-readers.trycloudflare.com/api/mandatory/shop/redact"
+  customer_deletion_url = "https://eminem-installation-supplier-encyclopedia.trycloudflare.com/api/mandatory/customers/redact"
+  customer_data_request_url = "https://eminem-installation-supplier-encyclopedia.trycloudflare.com/api/mandatory/customers/data_request"
+  shop_deletion_url = "https://eminem-installation-supplier-encyclopedia.trycloudflare.com/api/mandatory/shop/redact"
 
 [pos]
 embedded = false
 
 [build]
 automatically_update_urls_on_dev = true
-dev_store_url = "better-carts-prod-test.myshopify.com"
+dev_store_url = "stork-plugin-rework.myshopify.com"

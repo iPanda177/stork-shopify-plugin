@@ -4,6 +4,7 @@ import { Model } from "mongoose";
 import { Product } from "../../schemas/product.schema.ts";
 import { Reference } from "../../schemas/reference.schema.ts";
 import { Shop } from "../../schemas/shop.schema.ts";
+import shopify from "../../utils/shopify.ts";
 
 @Injectable()
 export class OrdersService {
@@ -14,7 +15,7 @@ export class OrdersService {
   ) {}
 
   async handleOrderPaid(body: any, shopDomain: string) {
-    const { order_number, shipping_address, line_items, note, customer } = body;
+    const { id, shipping_address, line_items, note, customer } = body;
 
     const shop = await this.ShopModel.findOne({ domain: shopDomain });
 
@@ -31,7 +32,7 @@ export class OrdersService {
         return;
       }
 
-      return { product: product.id, quantity: item.quantity };
+      return { product: product.id, quantity: item.quantity, external_product_id: item.product_id, line_item_id: item.id };
     }));
 
     const filteredProducts = products.filter((product: any) => !!product);
@@ -41,9 +42,10 @@ export class OrdersService {
     }
 
     const orderData = {
-      external_order_id: order_number,
+      external_order_id: id,
       notes: note || null,
       sales_channel: "shopify",
+      shop_domain: shopDomain,
       products: filteredProducts,
       address: {
         address: shipping_address?.address1 || null,
@@ -69,5 +71,51 @@ export class OrdersService {
     })
 
     console.log(sendOrder.body, sendOrder.status, sendOrder);
+  }
+
+  async handleOrderFulfilled(external_order_id: string, tracking_info: any, products: any, shopDomain: string) {
+    const shop = await this.ShopModel.findOne({ domain: shopDomain });
+
+    if (!shop) {
+      return;
+    }
+
+    const fulfillmentOrders = await shopify.api.rest.FulfillmentOrder.all({
+      session: shop.session,
+      order_id: external_order_id,
+    });
+
+    if (!fulfillmentOrders.length) {
+      return;
+    }
+
+    const fullfillmentArray = fulfillmentOrders.map((fulfillmentOrder: any) => {
+      return {
+        fulfillment_order_id: fulfillmentOrder.id,
+        fulfillment_order_line_items: fulfillmentOrder.line_items.map((line_item: any) => {
+          const hasProduct = products.find((product: any) => product.line_item_id === line_item.id);
+
+          if (!hasProduct) {
+            return;
+          }
+
+          return {
+            id: line_item.id,
+            quantity: hasProduct.quantity,
+          }
+        }),
+      }
+    });
+
+    const fulfillment = new shopify.api.rest.Fulfillment({session: shop.session});
+    fulfillment.line_items_by_fulfillment_order = fullfillmentArray;
+      fulfillment.tracking_info = {
+        "number": tracking_info.number,
+        "company": tracking_info.company,
+        "url": tracking_info.url,
+      };
+    await fulfillment.save({
+      update: true,
+    });
   }
 }

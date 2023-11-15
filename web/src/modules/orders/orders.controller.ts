@@ -16,4 +16,13 @@ export class OrdersController {
 
     const orderData = await this.ordersService.handleOrderPaid(body, shopDomain);
   }
+
+  @Post('fullfilled')
+  async handleOrderFulfilled(@Body() body: any, @Res() res: Response) {
+    const { external_order_id, tracking_info, products, shop_domain } = body;
+
+    const orderData = await this.ordersService.handleOrderFulfilled(external_order_id, tracking_info, products, shop_domain);
+
+    orderData ? res.sendStatus(200) : res.sendStatus(400);
+  }
 }
