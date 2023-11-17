@@ -85,7 +85,11 @@ export class ShopService {
                 break;
 
               case 'images':
-                newProduct.images = product[key].map((image: any) => ({src: image}));
+                if (!product[key]) {
+                  newProduct.images = []
+                } else {
+                  newProduct.images = product[key].map((image: string) => ({ src: image }));
+                }
                 break;
 
               case 'properties':

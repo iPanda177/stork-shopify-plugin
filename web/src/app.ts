@@ -8,7 +8,7 @@ import { Express } from "express";
 import { ValidationPipe } from "@nestjs/common";
 
 // const PORT = parseInt(process.env.BACKEND_PORT || process.env.PORT || "", 10);
-const PORT = 6262;
+const PORT = 3000;
 const STATIC_PATH =
   process.env.NODE_ENV === "production"
     ? `${process.cwd()}/frontend/dist`

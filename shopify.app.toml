@@ -2,31 +2,27 @@
 
 name = "stork-plugin"
 client_id = "b8ad70fd7823781193947cf9add5877f"
-application_url = "https://stork-shopify.com"
+application_url = "https://110b-194-31-212-75.ngrok-free.app"
 embedded = true
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
 scopes = "read_products,write_products,read_orders,write_orders"
+use_legacy_install_flow = true
 
 [auth]
 redirect_urls = [
-  "https://stork-shopify.com/auth/callback",
-  "https://stork-shopify.com/auth/shopify/callback",
-  "https://stork-shopify.com/api/auth/callback"
+  "https://110b-194-31-212-75.ngrok-free.app/auth/callback",
+  "https://110b-194-31-212-75.ngrok-free.app/auth/shopify/callback",
+  "https://110b-194-31-212-75.ngrok-free.app/api/auth/callback"
 ]
 
 [webhooks]
 api_version = "2023-07"
-
-  [webhooks.privacy_compliance]
-  customer_deletion_url = "https://stork-shopify.com/api/mandatory/customers/redact"
-  customer_data_request_url = "https://stork-shopify.com/api/mandatory/customers/data_request"
-  shop_deletion_url = "https://stork-shopify.com/api/mandatory/shop/redact"
 
 [pos]
 embedded = false
 
 [build]
 automatically_update_urls_on_dev = true
-dev_store_url = "stork-app-test.myshopify.com"
+dev_store_url = "new-stork-store.myshopify.com"
